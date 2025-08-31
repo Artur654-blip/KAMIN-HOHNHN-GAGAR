@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Камінь, Ножиці, Папір</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f8ff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 15px 25px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #result {
+      font-size: 22px;
+      margin: 15px 0;
+    }
+
+    #result.win {
+      color: green;
+    }
+
+    #result.lose {
+      color: red;
+    }
+
+    #result.draw {
+      color: orange;
+    }
+
+    #score {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    #resetButton {
+      background-color: #f44336;
+    }
+
+    #resetButton:hover {
+      background-color: #d32f2f;
+    }
+  </style>
+</head>
+<body>
+  <h1>Камінь, Ножиці, Папір</h1>
+
+  <div class="buttons">
+    <button onclick="play('Камінь')">Камінь</button>
+    <button onclick="play('Ножиці')">Ножиці</button>
+    <button onclick="play('Папір')">Папір</button>
+  </div>
+
+  <div id="result" class="">Зробіть свій вибір!</div>
+  <div id="score">Рахунок: Ви - 0 | Комп'ютер - 0</div>
+  <button id="resetButton" onclick="resetScore()">Скинути рахунок</button>
+
+  <script>
+    let userScore = parseInt(localStorage.getItem("userScore")) || 0;
+    let computerScore = parseInt(localStorage.getItem("computerScore")) || 0;
+
+    const resultEl = document.getElementById("result");
+    const scoreEl = document.getElementById("score");
+
+    function updateScore() {
+      scoreEl.textContent = `Рахунок: Ви - ${userScore} | Комп'ютер - ${computerScore}`;
+      localStorage.setItem("userScore", userScore);
+      localStorage.setItem("computerScore", computerScore);
+    }
+
+    function play(userChoice) {
+      const choices = ["Камінь", "Ножиці", "Папір"];
+      const computerChoice = choices[Math.floor(Math.random() * 3)];
+
+      let resultText = `Ви: ${userChoice} | Комп'ютер: ${computerChoice}<br>`;
+      resultEl.className = "";
+
+      if (userChoice === computerChoice) {
+        resultText += "Нічия!";
+        resultEl.classList.add("draw");
+      } else if (
+        (userChoice === "Камінь" && computerChoice === "Ножиці") ||
+        (userChoice === "Ножиці" && computerChoice === "Папір") ||
+        (userChoice === "Папір" && computerChoice === "Камінь")
+      ) {
+        userScore++;
+        resultText += "Ви виграли!";
+        resultEl.classList.add("win");
+      } else {
+        computerScore++;
+        resultText += "Ви програли!";
+        resultEl.classList.add("lose");
+      }
+
+      resultEl.innerHTML = resultText;
+      updateScore();
+    }
+
+    function resetScore() {
+      userScore = 0;
+      computerScore = 0;
+      updateScore();
+      resultEl.innerHTML = "Зробіть свій вибір!";
+      resultEl.className = "";
+    }
+
+    updateScore(); // оновити рахунок при завантаженні
+  </script>
+</body>
+</html>
